@@ -14,6 +14,11 @@ class Unbound(ABC):
             yield num
             num += 1
 
+    @property
+    def naturals(self):
+        return Unbound._create_generator(self)
+
+
     def __iter__(self):
         return self._create_generator()
 

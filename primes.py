@@ -10,7 +10,7 @@ class PrimeNumbers(Unbound):
 
     def _create_generator(self):
         num = self.start
-        while True:
+        for num in self.naturals:
             if self.end is not None and num > self.end:
                 break
             if num in self._primes:
@@ -20,7 +20,6 @@ class PrimeNumbers(Unbound):
                     break
             else:
                 yield num
-            num += 1
 
 if __name__ == "__main__":
     primes = PrimeNumbers(end=50)
