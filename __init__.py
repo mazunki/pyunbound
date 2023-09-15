@@ -1,2 +1,2 @@
-from .unbound import Unbound
+from .unbound import Unbound, DerivedUnbound
 
