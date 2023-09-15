@@ -18,3 +18,16 @@ class Squares(Unbound):
         for num in self.naturals:
             yield num**2
 ```
+
+and then you can use your class as follows, for instance:
+
+```python
+
+squares = Squares()
+derived = squares - 2
+superderived: squares*3
+
+for sq, sd in zip(squares, superderived):
+    print(f"{sq} => {sd}")
+```
+
