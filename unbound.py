@@ -10,7 +10,7 @@ class Unbound(ABC):
     @abstractmethod
     def __iter__(self):
         num = self.start
-        while self.end is not None and num < self.end:
+        while self.end is None or num < self.end:
             yield num
             num += 1
 
