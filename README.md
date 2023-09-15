@@ -25,7 +25,7 @@ and then you can use your class as follows, for instance:
 
 squares = Squares()
 derived = squares - 2
-superderived: squares*3
+superderived = squares * 3
 
 for sq, sd in zip(squares, superderived):
     print(f"{sq} => {sd}")
