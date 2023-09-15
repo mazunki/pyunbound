@@ -13,7 +13,10 @@ class Squares(Unbound):
             yield num**2
 
 if __name__ == "__main__":
-    for sq in Squares(end=50):
-        print(sq)
-        time.sleep(0.1)
+    squares = Squares()
+    derived = squares - 2
+    superderived = squares * 3
+
+    for sq, sd in zip(squares, superderived):
+        print(f"{sq} => {sd}")
 
