@@ -8,7 +8,7 @@ class PrimeNumbers(Unbound):
         super().__init__(start=start, end=end)
         self._primes = set()
 
-    def _create_generator(self):
+    def __iter__(self):
         num = self.start
         for num in self.naturals:
             if self.end is not None and num > self.end:

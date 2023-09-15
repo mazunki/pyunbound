@@ -8,7 +8,7 @@ class Unbound(ABC):
         self.start, self.end = start, end
 
     @abstractmethod
-    def _create_generator(self):
+    def __iter__(self):
         num = self.start
         while self.end is not None and num < self.end:
             yield num
@@ -16,11 +16,7 @@ class Unbound(ABC):
 
     @property
     def naturals(self):
-        return Unbound._create_generator(self)
-
-
-    def __iter__(self):
-        return self._create_generator()
+        return Unbound.__iter__(self)
 
     def __add__(self, other):
         return DerivedUnbound.derive(self, lambda v: v+other, expr=f"+{other}")
@@ -57,7 +53,7 @@ class DerivedUnbound(Unbound):
         operation_str = ' -> '.join(self.expressions)
         return f"<DerivedUnbound[{self.base}]: {operation_str}>"
 
-    def _create_generator(self):
+    def __iter__(self):
         generator = iter(self.base)
         for operation in self.operations:
             generator = map(operation, generator)
