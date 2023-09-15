@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from unbound import Unbound
+from pyunbound import Unbound
 from typing import Optional
 import time
 
