@@ -9,10 +9,7 @@ class PrimeNumbers(Unbound):
         self._primes = set()
 
     def __iter__(self):
-        num = self.start
         for num in self.naturals:
-            if self.end is not None and num > self.end:
-                break
             if num in self._primes:
                 break
             for i in range(2, int(num ** 0.5) + 1):
