@@ -22,7 +22,6 @@ class Squares(Unbound):
 and then you can use your class as follows, for instance:
 
 ```python
-
 squares = Squares()
 derived = squares - 2
 superderived = squares * 3
