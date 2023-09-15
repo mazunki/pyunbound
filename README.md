@@ -30,3 +30,12 @@ for sq, sd in zip(squares, superderived):
     print(f"{sq} => {sd}")
 ```
 
+if you want to get timings, simply slap on a context manager:
+```python
+with superderived as iterator:
+    for item in iterator:
+        print(item)
+```
+
+the timing info will appear on stderr, so you can `>/dev/null` it or something if you only care about the timings
+
