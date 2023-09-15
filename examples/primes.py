@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from pyunbound import Unbound
 from typing import Optional
-import time
+import sys
 
 class PrimeNumbers(Unbound):
     def __init__(self, start=1, end: Optional[int]=None):
@@ -17,14 +17,18 @@ class PrimeNumbers(Unbound):
                     break
             else:
                 yield num
+                self._primes.add(num)
 
 if __name__ == "__main__":
-    primes = PrimeNumbers(end=50)
+    primes = PrimeNumbers()
     derived = primes * 2
-    derived2 = derived - 1
-    print(primes, derived, derived2, sep="\n")
+    derived = derived - 1
+    
+    until = int(sys.argv[1]) 
 
-    for p1, p2, p3 in zip(primes, derived, derived2):
-        print(p1, p2, p3)
-        time.sleep(0.1)
+    print(derived)
+    with derived as iterator:
+        for item in iterator:
+            if item > until:
+                break
 

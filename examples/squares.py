@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from pyunbound import Unbound
+from pyunbound import Unbound, DerivedUnbound
 from typing import Optional
 import time
 
@@ -13,10 +13,11 @@ class Squares(Unbound):
             yield num**2
 
 if __name__ == "__main__":
-    squares = Squares()
-    derived = squares - 2
-    superderived = squares * 3
+    try:
+        with Squares(end=10*1000*1000) as squares, squares-2 as superderived:
+            for sq, sd in zip(squares, superderived):
+                print(f"{sq} → {sd}")
+    except KeyboardInterrupt:
+        exit(127)
 
-    for sq, sd in zip(squares, superderived):
-        print(f"{sq} => {sd}")
 
