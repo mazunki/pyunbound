@@ -2,6 +2,8 @@
 from abc import ABC, abstractmethod
 from typing import Optional, Callable
 import copy
+import time
+import sys
 
 class Unbound(ABC):
     def __init__(self, start: int=1, end: Optional[int]=None):
@@ -9,10 +11,10 @@ class Unbound(ABC):
 
     @abstractmethod
     def __iter__(self):
-        num = self.start
-        while self.end is None or num < self.end:
-            yield num
-            num += 1
+        self.num = self.start
+        while self.end is None or self.num < self.end:
+            yield self.num
+            self.num += 1
 
     @property
     def naturals(self):
@@ -22,13 +24,13 @@ class Unbound(ABC):
         return DerivedUnbound.derive(self, lambda v: v+other, expr=f"+{other}")
 
     def __sub__(self, other):
-        return DerivedUnbound.derive(self, lambda v: v-other, expr=f"-{other}")
+        return DerivedUnbound.derive(self, lambda v: v-other, expr=f"−{other}")
 
     def __mul__(self, other):
-        return DerivedUnbound.derive(self, lambda v: v*other, expr=f"*{other}")
+        return DerivedUnbound.derive(self, lambda v: v*other, expr=f"×{other}")
 
     def __truediv__(self, other):
-        return DerivedUnbound.derive(self, lambda v: v/other, expr=f"/{other}")
+        return DerivedUnbound.derive(self, lambda v: v/other, expr=f"÷{other}")
 
     def __floordiv__(self, other):
         return DerivedUnbound.derive(self, lambda v: v//other, expr=f"//{other}")
@@ -37,7 +39,33 @@ class Unbound(ABC):
         return DerivedUnbound.derive(self, lambda v: v**other, expr=f"**{other}")
 
     def __str__(self):
-        return f"{self.__class__.__name__}({self.start}..{self.end or ''})"
+        return f"{self.__class__.__name__}{self.domain_str}"
+
+    @property
+    def domain_str(self):
+        s = f"{self.start if self.start != 1 else ''}"
+        e = f"{self.end if self.end else ''}"
+        domain = f"{s}{'..' if s or e else ''}{e}"
+        return f"({domain})" if domain else ''
+
+    def __enter__(self):
+        self._start_time = time.time()
+        return self
+
+    def __exit__(self, exc_type, exc_val, traceback):
+        self._end_time = time.time()
+        self._execution_time = self._end_time - self._start_time
+        del self._start_time
+        del self._end_time
+        self.on_completion()
+        if exc_type is KeyboardInterrupt:
+            return True
+
+    def on_completion(self):
+        self.end = self.num
+        # \r to remove ^C
+        print(f"\r{self}: {self._execution_time}s", file=sys.stderr)
+
 
 class DerivedUnbound(Unbound):
     def __init__(self, base: Unbound, op: Callable, expr: str=""):
@@ -50,14 +78,17 @@ class DerivedUnbound(Unbound):
         super().__init__(start=base.start, end=base.end)
 
     def __str__(self):
-        operation_str = ' -> '.join(self.expressions)
-        return f"<DerivedUnbound[{self.base}]: {operation_str}>"
+        operation_str = ' → '.join(self.expressions)
+        return "<DerivedUnbound[{}{}]: {}>".format(self.base, self.domain_str, operation_str)
 
     def __iter__(self):
+        self.num = self.start
         generator = iter(self.base)
         for operation in self.operations:
             generator = map(operation, generator)
-        return generator
+
+        for self.num, value in enumerate(generator, start=self.start):
+            yield value
 
     @classmethod
     def derive(cls, base: Unbound, op: Callable, expr: str=""):
